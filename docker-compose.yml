@@ -3,7 +3,18 @@ volumes:
     speedtest-data:
     settings:
     dashboard-data:
+    octoprint:
 services:
+  octoprint:
+    image: octoprint/octoprint:1.8.1
+    #    build:
+    #      context: .
+    restart: unless-stopped
+    ports:
+      - '80:80'
+    privileged: true
+    volumes:
+      - 'octoprint:/octoprint'
   speedtest:
     build: ./speedtest
     privileged: true
@@ -23,7 +34,7 @@ services:
     restart: always
     build: ./dashboard
     ports:
-      - "80"
+      - 81:80
     volumes:
         - 'dashboard-data:/data'
   influxdb:
@@ -44,3 +55,4 @@ services:
     ports:
       - "1883:1883"
     restart: always
+ 
