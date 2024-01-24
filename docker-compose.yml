@@ -10,7 +10,7 @@ services:
 
   dev-box:
     image: ubuntu
-    cmd:
+    command:
       - bash -c 'sleep 999999999'
     restart: always
     network_mode: host
