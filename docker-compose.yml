@@ -4,9 +4,21 @@ volumes:
     settings:
     dashboard-data:
     octoprint:
+    local:
+
 services:
+
+  dev-box:
+    image: ubuntu
+    cmd:
+      - bash -c 'sleep 999999999'
+    restart: always
+    network_mode: host
+    volumes:
+      - 'local:/data'
+
   octoprint:
-    image: octoprint/octoprint:1.8.1
+    image: octoprint/octoprint:1.9.3
     #    build:
     #      context: .
     restart: unless-stopped
@@ -15,6 +27,7 @@ services:
     privileged: true
     volumes:
       - 'octoprint:/octoprint'
+
   speedtest:
     build: ./speedtest
     privileged: true
@@ -24,12 +37,14 @@ services:
     network_mode: host
     labels:
       io.balena.features.supervisor-api: 1
+
   connector:
     image:  balenablocks/connector
     restart: always
     labels:
       io.balena.features.balena-api: '1'
     privileged: true
+
   dashboard:
     restart: always
     build: ./dashboard
@@ -37,6 +52,7 @@ services:
       - 81:80
     volumes:
         - 'dashboard-data:/data'
+
   influxdb:
     image: influxdb@sha256:73f876e0c3bd02900f829d4884f53fdfffd7098dd572406ba549eed955bf821f
     container_name: influxdb
@@ -50,6 +66,7 @@ services:
       - INFLUXDB_DATA_DIR=/data
     volumes:
       - 'speedtest-data:/data'
+
   mqtt:
     image: arm32v6/eclipse-mosquitto@sha256:ec3e1dbb9e198ff04d62c2d0f6eff74cad7438c7d080b89a28428fb96c8479c4
     ports:
